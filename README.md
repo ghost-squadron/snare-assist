@@ -8,9 +8,9 @@ or with https:
 
 `git clone --recurse-submodules https://github.com/ghost-squadron/snare-assist.git`
 
-## Installing requiremnts
+## Installing requirements
 
-It is always recommended to install packages inside a virtual environment as to not pollute your host machine:
+It is always recommended to install packages inside a virtual environment to not pollute your host machine:
 
 `python -m venv venv`
 
@@ -18,7 +18,7 @@ Activate your new virtual environment:
 
 `source venv/bin/activate`
 
-Lastly install all requirements into the environment:
+Lastly, install all requirements into the environment:
 
 `pip install -r requirements.txt`
 
@@ -44,4 +44,4 @@ The route instructions are similar to Calypso so remember to orient yourself wit
 
 ## Known bugs
 
-Calculating the route takes a bit so if you spam the macro key you'll start getting weird behaviour - should probably implement a guard/mutex.
+Calculating the route takes a bit so if you spam the macro key you'll start getting weird behavior - should probably implement a guard/mutex.
