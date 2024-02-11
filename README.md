@@ -22,13 +22,13 @@ Lastly install all requirements into the environment:
 
 `pip install -r requirements.txt`
 
-# Running
+## Running
 
 Remember to always activate the virtual environment first.
 
 `python app.py`
 
-# Using the program
+## Using the program
 
 The program works by using the `/showlocation` command which copies your current location into your clipboard.
 **The first key you press after the program starts will be used as a macro key to do this.**
@@ -42,6 +42,6 @@ This key can be changed by editing the `ROUTE_KEY` constant at the top of `app.p
 
 The route instructions are similar to Calypso so remember to orient yourself with the top of your ship facing Stanton North and looking towards your destination (OM-1s point Stanton North and OM-2s point Stanton South).
 
-# Known bugs
+## Known bugs
 
 Calculating the route takes a bit so if you spam the macro key you'll start getting weird behaviour - should probably implement a guard/mutex.
