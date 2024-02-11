@@ -1,0 +1,9 @@
+discord
+loguru
+mathutils
+numpy
+pyautogui
+pydantic
+pynput
+pyqt5
+python-dotenv

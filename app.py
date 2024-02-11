@@ -1,13 +1,26 @@
-import sys
 import json
+import sys
 import time
+
 import numpy
 import pyautogui
 from loguru import logger
 from pynput import keyboard
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication, QDesktopWidget, QMainWindow
-from calypso.backend.snare import Snare, pretty_print_dist, location_to_str
+from PyQt5.QtWidgets import (
+    QApplication,
+    QDesktopWidget,
+    QLabel,
+    QMainWindow,
+    QMessageBox,
+)
+
+from calypso.backend.snare import Snare, location_to_str, pretty_print_dist
+
+WIDTH = 450
+HEIGHT = 160
+
+ROUTE_KEY = keyboard.Key.f11
 
 
 class MainWindow(QMainWindow):
@@ -20,57 +33,87 @@ class MainWindow(QMainWindow):
             | QtCore.Qt.X11BypassWindowManagerHint
         )
 
-        # Set the window size
-        self.resize(450, 160)
+        self.setWindowTitle("Press a Key")
 
-        self.setWindowOpacity(0.7)
-        self.setStyleSheet("background:transparent")
+        # Create a label to display the prompt
+        self.prompt_label = QLabel(
+            "Press the key you want to use for macro activation", self
+        )
+        self.prompt_label.setStyleSheet("color: yellow; font-size: 18px;")
+        self.prompt_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.prompt_label.resize(WIDTH - 20, 40)
+        self.prompt_label.move(10, 60)
 
-        self.label_1 = QtWidgets.QLabel("Macro key: None", self)
+        self.label_1 = QtWidgets.QLabel("", self)
         self.label_1.setStyleSheet("color: yellow")
-        self.label_1.resize(430, 20)  # Set an initial size for the label
+        self.label_1.resize(WIDTH - 20, 20)  # Set an initial size for the label
         self.label_1.move(10, 0)
 
         self.label_2 = QtWidgets.QLabel("", self)
         self.label_2.setStyleSheet("color: yellow")
-        self.label_2.resize(430, 20)  # Set an initial size for the label
+        self.label_2.resize(WIDTH - 20, 20)  # Set an initial size for the label
         self.label_2.move(10, 20)
 
-        sep = QtWidgets.QLabel("-" * 100, self)
-        sep.setStyleSheet("color: yellow")
-        sep.resize(430, 20)  # Set an initial size for the label
-        sep.move(10, 40)
+        self.sep = QtWidgets.QLabel("", self)
+        self.sep.setStyleSheet("color: yellow")
+        self.sep.resize(WIDTH - 20, 20)  # Set an initial size for the label
+        self.sep.move(10, 40)
 
         self.label_3 = QtWidgets.QLabel("", self)
         self.label_3.setStyleSheet("color: yellow")
-        self.label_3.resize(430, 20)  # Set an initial size for the label
+        self.label_3.resize(WIDTH - 20, 20)  # Set an initial size for the label
         self.label_3.move(10, 60)
 
         self.label_4 = QtWidgets.QLabel("", self)
         self.label_4.setStyleSheet("color: yellow")
-        self.label_4.resize(430, 20)  # Set an initial size for the label
+        self.label_4.resize(WIDTH - 20, 20)  # Set an initial size for the label
         self.label_4.move(10, 80)
 
         self.label_5 = QtWidgets.QLabel("", self)
         self.label_5.setStyleSheet("color: yellow")
-        self.label_5.resize(430, 20)  # Set an initial size for the label
+        self.label_5.resize(WIDTH - 20, 20)  # Set an initial size for the label
         self.label_5.move(10, 100)
 
         self.label_6 = QtWidgets.QLabel("", self)
         self.label_6.setStyleSheet("color: yellow")
-        self.label_6.resize(430, 20)  # Set an initial size for the label
+        self.label_6.resize(WIDTH - 20, 20)  # Set an initial size for the label
         self.label_6.move(10, 120)
 
         self.label_7 = QtWidgets.QLabel("", self)
         self.label_7.setStyleSheet("color: yellow")
-        self.label_7.resize(430, 20)  # Set an initial size for the label
+        self.label_7.resize(WIDTH - 20, 20)  # Set an initial size for the label
         self.label_7.move(10, 140)
 
-        self.alignBottomRight()
+        self.alignCenter()
+
+        # Set the window size
+        self.resize(WIDTH, HEIGHT)
+
+        self.setWindowOpacity(0.7)
+        self.setStyleSheet("background:transparent")
 
         # Start listening for the key press in the background
         listener = keyboard.Listener(on_press=self.on_press)
         listener.start()
+
+    def start(self):
+        self.prompt_label.setText("")
+        self.label_1.setText(f"Macro key: {self.key}")
+        self.sep.setText("-" * 100)
+        self.alignBottomRight()
+
+    def alignCenter(self):
+        # Use QDesktopWidget to get the desktop information
+        desktop = QApplication.desktop()
+
+        # Get the primary screen's geometry
+        screenGeometry = desktop.screenGeometry(desktop.primaryScreen())
+
+        # Calculate the x and y positions for the center of the primary screen
+        x = screenGeometry.x() + (screenGeometry.width() - WIDTH) // 2
+        y = screenGeometry.y() + (screenGeometry.height() - HEIGHT) // 2
+
+        self.move(x, y)  # Move the window to the center
 
     def alignBottomRight(self):
         # Use QScreen to get the geometry of the primary screen
@@ -114,14 +157,14 @@ class MainWindow(QMainWindow):
     def on_press(self, key):
         if "key" not in self.__dict__:
             self.key = key
-            self.label_1.setText(f"Macro key: {self.key}")
+            self.start()
             return
 
         try:
             match key:
                 case self.key:
                     self.perform_macro()
-                case keyboard.Key.f11:
+                case ROUTE_KEY:
                     value = QApplication.clipboard().text().strip()
                     if " -> " in value:
                         source, destination = value.split(" -> ")
