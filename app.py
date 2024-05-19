@@ -27,6 +27,12 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
+        if len(sys.argv) > 1:
+            if " -> " in value:
+                source, destination = value.split(" -> ")
+                self.snare = Snare(source.strip(), destination.strip())
+                self.update_route()
+
         self.setWindowFlags(
             QtCore.Qt.WindowStaysOnTopHint
             | QtCore.Qt.FramelessWindowHint
@@ -179,6 +185,7 @@ class MainWindow(QMainWindow):
         pyautogui.press("enter")  # Press Enter
         time.sleep(0.1)
         pyautogui.hotkey("shift", "7")  # Press Shift+7 to type "/"
+        # pyautogui.press("num 3")
         pyautogui.write("showlocation", interval=0.001)  # Type the rest of the command
         pyautogui.press("enter")  # Press Enter again
         time.sleep(1)
